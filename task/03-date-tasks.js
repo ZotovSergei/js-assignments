@@ -22,6 +22,7 @@
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
 function parseDataFromRfc2822(value) {
+   return new Date(value);
    throw new Error('Not implemented');
 }
 
@@ -37,6 +38,7 @@ function parseDataFromRfc2822(value) {
  *    '2016-01-19T08:07:37Z' => Date()
  */
 function parseDataFromIso8601(value) {
+   return Date.parse(value);
    throw new Error('Not implemented');
 }
 
@@ -56,6 +58,13 @@ function parseDataFromIso8601(value) {
  *    Date(2015,1,1)    => false
  */
 function isLeapYear(date) {
+   let data = new Date(date);
+   data.setMonth(data.getMonth() + 1);
+   data.setDate(data.getDate() - 1);
+   let day = data.getDate();
+   if (day == 29) return true;
+   return false;
+   console.log(day);
    throw new Error('Not implemented');
 }
 
@@ -76,8 +85,22 @@ function isLeapYear(date) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
 function timeSpanToString(startDate, endDate) {
+   let stDate = new Date(startDate);
+   let enDate = new Date(endDate);
+
+   let result = enDate - stDate;
+   let date = new Date(result).toISOString();
+
+   // console.log(date);
+
+   // console.log(date.indexOf('T'));
+   let res = date.substring(11, 23);
+   // console.log(res);
+   return res;
+
    throw new Error('Not implemented');
 }
+
 
 
 /**
@@ -94,14 +117,102 @@ function timeSpanToString(startDate, endDate) {
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
 function angleBetweenClockHands(date) {
-    throw new Error('Not implemented');
+   let data = date.toISOString();
+   let format = 12;
+   // console.log(data);
+   
+   let hour = Number(data.substring(11, 13));
+   let m = Number(data.substring(14, 16));
+   // console.log(hour);
+   // console.log(m);
+   if (hour>12) {
+      hour  -= 12;
+   }
+   // console.log(hour);
+   let alpha = 30*hour+0.5*m;
+   let beta = 6*m;
+   let c = (alpha-beta);
+   if (c > 180) {
+      c = 360 - c;
+   }
+   let result = Math.abs(c)*Math.PI/180;
+   
+   // console.log(alpha-beta);
+   // console.log(result);
+   return result;
+   // console.log(hour);
+   // console.log(m);
+   if (hour > 12) {
+      switch (hour) {
+         case 13:
+            hour = 1;
+            // format = 24;
+            break;
+         case 14:
+            hour = 2;
+            // format = 24;
+            break;
+         case 15:
+            hour = 3;
+            // format = 24;
+            break;
+         case 16:
+            hour = 4;
+            // format = 24;
+            break;
+         case 17:
+            hour = 5;
+            // format = 24;
+            break;
+         case 18:
+            hour = 6;
+            // format = 24;
+            break;
+         case 19:
+            hour = 7;
+            // format = 24;
+            break;
+         case 20:
+            hour = 8;
+            // format = 24;
+            break;
+         case 21:
+            hour = 9;
+            // format = 24;
+            break;
+         case 22:
+            hour = 10;
+            // format = 24;
+            break;
+         case 23:
+            hour = 11;
+            // format = 24;
+            break;
+         case 24:
+            hour = 12;
+            // format = 24;
+            break;
+         default:
+            break;
+      }
+   }
+
+   // // let hour = date.getHours()- 3600000;
+   // // let minut = date.getMinutes();
+   // let res = (hour + m / 60) * 360 / format;
+   // console.log(res);
+   // // if (res > 180) {
+   // //    return (res * Math.PI / 360);
+   // // }
+   // return (res * Math.PI / 180);
+   throw new Error('Not implemented');
 }
 
 
 module.exports = {
-    parseDataFromRfc2822: parseDataFromRfc2822,
-    parseDataFromIso8601: parseDataFromIso8601,
-    isLeapYear: isLeapYear,
-    timeSpanToString: timeSpanToString,
-    angleBetweenClockHands: angleBetweenClockHands
+   parseDataFromRfc2822: parseDataFromRfc2822,
+   parseDataFromIso8601: parseDataFromIso8601,
+   isLeapYear: isLeapYear,
+   timeSpanToString: timeSpanToString,
+   angleBetweenClockHands: angleBetweenClockHands
 };
